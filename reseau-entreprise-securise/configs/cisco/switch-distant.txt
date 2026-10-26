@@ -1,0 +1,39 @@
+! =====================================================
+! SWITCH-DISTANT — Site distant (VLAN 50), rôle distribution + accès
+! =====================================================
+enable
+configure terminal
+hostname SWITCH-DISTANT
+!
+vlan 50
+ name DISTANT
+exit
+vlan 99
+ name MANAGEMENT
+exit
+!
+interface vlan 99
+ ip address 172.16.99.50 255.255.255.0
+ no shutdown
+exit
+ip default-gateway 172.16.99.254
+!
+! ---------- UPLINK VERS PFSENSE DISTANT (Gi0/0) ----------
+interface GigabitEthernet0/0
+ description UPLINK_VERS_PFSENSE_DISTANT
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+exit
+!
+! ---------- PORTS UTILISATEURS ----------
+interface range GigabitEthernet0/1-24
+ description VPC_DISTANT
+ switchport mode access
+ switchport access vlan 50
+ spanning-tree portfast
+ no shutdown
+exit
+!
+end
+write memory

@@ -1,0 +1,49 @@
+! =====================================================
+! DISTRIB-DC — Distribution de la direction DC (VLAN 20)
+! Les configurations DISTRIB-DRH (VLAN 30, SVI 172.16.99.12) et
+! DISTRIB-DD (VLAN 40, SVI 172.16.99.13) sont identiques
+! (seuls le hostname, le VLAN et l'IP de management changent).
+! =====================================================
+enable
+configure terminal
+hostname DISTRIB-DC
+!
+vlan 20
+ name DC
+exit
+vlan 99
+ name MANAGEMENT
+exit
+!
+interface vlan 99
+ ip address 172.16.99.11 255.255.255.0
+ no shutdown
+exit
+ip default-gateway 172.16.99.254
+!
+! ---------- UPLINK TRUNK VERS CORE (Gi0/0) ----------
+interface GigabitEthernet0/0
+ description UPLINK_VERS_CORE
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 20,99
+ no shutdown
+exit
+!
+! ---------- DOWNLINKS ACCESS VERS LES SWITCHES D'ACCÈS ----------
+interface GigabitEthernet0/1
+ description VERS_ACC_DC1
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+!
+interface GigabitEthernet0/2
+ description VERS_ACC_DC2
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+!
+end
+write memory

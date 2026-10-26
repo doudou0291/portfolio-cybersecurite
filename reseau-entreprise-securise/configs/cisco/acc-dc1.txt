@@ -1,0 +1,44 @@
+! =====================================================
+! ACC-DC1 — Switch d'accès (modèle pour les 6 switches d'accès)
+!
+! Switch    | VLAN | SVI VLAN 99
+! ACC-DC1   | 20   | 172.16.99.21
+! ACC-DC2   | 20   | 172.16.99.22
+! ACC-DRH1  | 30   | 172.16.99.31
+! ACC-DRH2  | 30   | 172.16.99.32
+! ACC-DD1   | 40   | 172.16.99.41
+! ACC-DD2   | 40   | 172.16.99.42
+! =====================================================
+enable
+configure terminal
+hostname ACC-DC1
+!
+vlan 99
+ name MANAGEMENT
+exit
+!
+interface vlan 99
+ ip address 172.16.99.21 255.255.255.0
+ no shutdown
+exit
+ip default-gateway 172.16.99.254
+!
+! ---------- UPLINK VERS DISTRIB-DC (Gi0/0) ----------
+interface GigabitEthernet0/0
+ description UPLINK_VERS_DISTRIB_DC
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+!
+! ---------- PORTS UTILISATEURS ----------
+interface range GigabitEthernet0/1-24
+ description POSTES_DC
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ no shutdown
+exit
+!
+end
+write memory

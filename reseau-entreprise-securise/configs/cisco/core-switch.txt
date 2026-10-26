@@ -1,0 +1,63 @@
+! =====================================================
+! CORE-SWITCH — transport trunk pur (aucun VLAN métier)
+! =====================================================
+! Note : 'switchport trunk encapsulation dot1q' n'existe que sur les
+! switches L3 (3560, 3750...). Sur IOSvL2 / 2960, supprimer cette ligne.
+enable
+configure terminal
+hostname CORE-SWITCH
+!
+! ---------- VLAN MANAGEMENT ----------
+vlan 99
+ name MANAGEMENT
+exit
+!
+interface vlan 99
+ ip address 172.16.99.1 255.255.255.0
+ no shutdown
+exit
+ip default-gateway 172.16.99.254
+!
+! ---------- TRUNK VERS PFSENSE (Gi0/0) ----------
+interface GigabitEthernet0/0
+ description TRUNK_VERS_PFSENSE
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 20,30,40,60,99
+ no shutdown
+exit
+!
+! ---------- TRUNK VERS DISTRIB-DC (Gi0/1) ----------
+interface GigabitEthernet0/1
+ description TRUNK_VERS_DISTRIB_DC
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 20,99
+ no shutdown
+exit
+!
+! ---------- TRUNK VERS DISTRIB-DRH (Gi0/2) ----------
+interface GigabitEthernet0/2
+ description TRUNK_VERS_DISTRIB_DRH
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 30,99
+ no shutdown
+exit
+!
+! ---------- TRUNK VERS DISTRIB-DD (Gi0/3) ----------
+interface GigabitEthernet0/3
+ description TRUNK_VERS_DISTRIB_DD
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 40,99
+ no shutdown
+exit
+!
+! ---------- PORTS NON UTILISÉS ----------
+interface range GigabitEthernet0/4-24
+ shutdown
+exit
+!
+end
+write memory
