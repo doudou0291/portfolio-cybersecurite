@@ -10,4 +10,3 @@ Ingénieure en informatique, spécialité cybersécurité. Ce dépôt rassemble 
 
 **Ce que montrent ces projets :** je sais **sécuriser un réseau** (segmentation, filtrage, isolation), **détecter les attaques** (SIEM) et **organiser la réponse** (SOAR).
 
-📫 Contact : *[ajoutez votre LinkedIn]*
